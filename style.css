@@ -45,7 +45,7 @@ img {
   bottom: 0;
   z-index: 1;
 }
-#platform {
+.platform {
   position: absolute;
   background-color: wheat;
   width: 30%;

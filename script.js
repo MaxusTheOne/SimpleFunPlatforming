@@ -1,11 +1,11 @@
 "use strict";
 let playerObj = document.querySelector("#player");
-let platformObj = document.querySelector("#platform");
+let platformObj = [document.querySelector("#platform"), document.querySelector("#platform1")];
 let playerX = 10;
 let playerY = 1;
 let playerWidth = 5;
-let platformX = 30;
-let platformY = 10;
+let platformX = [30, 60];
+let platformY = [10, 30];
 let platformHeight = 10;
 let platformWidth = 30;
 let onPlatform = false;
@@ -43,8 +43,10 @@ document.addEventListener("keyup", function (event) {
   }
 });
 function initGame() {
-  platformObj.style.left = platformX + "%";
-  platformObj.style.bottom = platformY + "%";
+  platformObj[0].style.left = platformX[0] + "%";
+  platformObj[0].style.bottom = platformY[0] + "%";
+  platformObj[1].style.left = platformX[1] + "%";
+  platformObj[1].style.bottom = platformY[1] + "%";
 }
 
 function playerMovement() {
@@ -68,26 +70,26 @@ function playerMovement() {
   playerObj.style.left = playerX + "%";
 }
 function playerGravity() {
-  for (let i = 0; i < 1; i++) {
-    platformCollision(platformY, platformHeight, platformX, platformWidth);
+  for (let i = 0; i <= 1; i++) {
+    platformCollision(platformY[i], platformHeight, platformX[i], platformWidth);
     if (onPlatform) {
-      fallOffPlatform(platformX, platformWidth, platformY, platformHeight);
+      fallOffPlatform(platformX[i], platformWidth, platformY[i], platformHeight);
     }
   }
 
-  if (playerY < 1) {
-    platformCollision(1, 0, -500, 10000);
-  } else if (gravityMode == true) {
+  platformCollision(-10, 11, -500, 10000);
+  if (gravityMode == true) {
     gravity -= 0.5;
     playerY += gravity;
   }
   playerObj.style.bottom = playerY + "%";
 }
 
-function platformCollision(localPlatformY, localPlatformHeight, localPlatformX, localPlatformwidth) {
-  if (playerY < localPlatformY + localPlatformHeight && gravity < 0) {
-    if (playerX + playerWidth > localPlatformX && playerX < localPlatformX + localPlatformwidth) {
+function platformCollision(localPlatformY, localPlatformHeight, localplatformX, localPlatformwidth) {
+  if (playerY < localPlatformY + localPlatformHeight && playerY > localPlatformY && gravity < 0) {
+    if (playerX + playerWidth > localplatformX && playerX < localplatformX + localPlatformwidth) {
       playerY = localPlatformY + localPlatformHeight;
+      console.log("collided");
       gravity = 0;
       gravityMode = false;
       canJump = true;
@@ -95,8 +97,8 @@ function platformCollision(localPlatformY, localPlatformHeight, localPlatformX, 
     }
   }
 }
-function fallOffPlatform(localPlatformX, localPlatformwidth, localPlatformY, localPlatformHeight) {
-  if (playerX + playerWidth < localPlatformX || playerX > localPlatformX + localPlatformwidth) {
+function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, localPlatformHeight) {
+  if (playerX + playerWidth < localplatformX || playerX > localplatformX + localPlatformwidth) {
     if (playerY <= localPlatformY + localPlatformHeight && playerY >= localPlatformY + localPlatformHeight) {
       gravityMode = true;
       onPlatform = false;
