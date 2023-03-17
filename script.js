@@ -1,11 +1,10 @@
 "use strict";
 let playerObj = document.querySelector("#player");
-let platformObj = [document.querySelector("#platform"), document.querySelector("#platform1")];
 let playerX = 10;
 let playerY = 1;
 let playerWidth = 5;
-let platformX = [30, 60];
-let platformY = [10, 30];
+let platformX = [];
+let platformY = [];
 let platformHeight = 10;
 let platformWidth = 30;
 let onPlatform = false;
@@ -43,10 +42,9 @@ document.addEventListener("keyup", function (event) {
   }
 });
 function initGame() {
-  platformObj[0].style.left = platformX[0] + "%";
-  platformObj[0].style.bottom = platformY[0] + "%";
-  platformObj[1].style.left = platformX[1] + "%";
-  platformObj[1].style.bottom = platformY[1] + "%";
+  createPlatform(35, 10, 0);
+  createPlatform(55, 40, 0);
+  createPlatform(5, 30.5, 2);
 }
 
 function playerMovement() {
@@ -70,7 +68,7 @@ function playerMovement() {
   playerObj.style.left = playerX + "%";
 }
 function playerGravity() {
-  for (let i = 0; i <= 1; i++) {
+  for (let i = 0; i <= platformX.length; i++) {
     platformCollision(platformY[i], platformHeight, platformX[i], platformWidth);
     if (onPlatform) {
       fallOffPlatform(platformX[i], platformWidth, platformY[i], platformHeight);
@@ -100,8 +98,21 @@ function platformCollision(localPlatformY, localPlatformHeight, localplatformX, 
 function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, localPlatformHeight) {
   if (playerX + playerWidth < localplatformX || playerX > localplatformX + localPlatformwidth) {
     if (playerY <= localPlatformY + localPlatformHeight && playerY >= localPlatformY + localPlatformHeight) {
+      console.log("fall off platform");
       gravityMode = true;
       onPlatform = false;
     }
   }
+}
+
+function createPlatform(x, y, id) {
+  const parent = document.querySelector("#game_elements");
+  const platform = document.createElement("div");
+  platform.id = "platform" + id;
+  platform.classList.add("platform");
+  platformX.push(x);
+  platformY.push(y);
+  platform.style.left = x + "%";
+  platform.style.bottom = y + "%";
+  parent.appendChild(platform);
 }
