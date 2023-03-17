@@ -2,12 +2,12 @@
 let playerObj = document.querySelector("#player");
 let playerX = 10;
 let playerY = 1;
-let playerWidth = 5;
+let playerWidth = 2;
 let platformX = [];
 let platformY = [];
-let platformHeight = 5;
-let platformWidth = 30;
-let platformAmount = 5;
+let platformHeight = 2;
+let platformWidth = 10;
+let platformAmount = 30;
 let onPlatform = false;
 let moveKey = [false, false, false, false]; //w,a,s,d
 let canJump = true;
@@ -52,13 +52,13 @@ function playerMovement() {
   //   console.log("gravity: " + gravity);
   //   console.log("playerY: " + playerY);
   if (moveKey[1] === true) {
-    playerX -= 1; // Move the player left
+    playerX -= 0.5; // Move the player left
   } else if (moveKey[3] === true) {
-    playerX += 1; // Move the player right
+    playerX += 0.5; // Move the player right
   }
   if (moveKey[0] === true && canJump === true) {
     //Jumping
-    gravity = 8;
+    gravity = 5;
     gravityMode = true;
     canJump = false;
     onPlatform = false;
@@ -78,7 +78,7 @@ function playerGravity() {
 
   platformCollision(-10, 11, -500, 10000);
   if (gravityMode == true) {
-    gravity -= 0.5;
+    gravity -= 0.3;
     playerY += gravity;
   }
   playerObj.style.bottom = playerY + "%";
@@ -93,7 +93,7 @@ function platformCollision(localPlatformY, localPlatformHeight, localplatformX, 
       gravityMode = false;
       canJump = true;
       onPlatform = true;
-    } else if (playerY + gravity <= localPlatformY + localPlatformHeight && playerY > localPlatformY) {
+    } else if (playerY + gravity <= localPlatformY + localPlatformHeight && playerY > localPlatformY && gravity < 0) {
       gravity = localPlatformY + localPlatformHeight - playerY;
       console.log(`gravity adjusted to: ${gravity}, platY: ${localPlatformY}, playerY: ${playerY}`);
     }
@@ -105,6 +105,7 @@ function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, loc
       console.log("fall off platform");
       gravityMode = true;
       onPlatform = false;
+      canJump = false;
     }
   }
 }
@@ -114,6 +115,8 @@ function createPlatform(x, y, id) {
   const platform = document.createElement("div");
   platform.id = "platform" + id;
   platform.classList.add("platform");
+  // platform.classList.add("wrapper");
+  // platform.style.animationDelay = "-" + Math.floor(Math.random() * 10) + "s";
   platformX.push(x);
   platformY.push(y);
   platform.style.left = x + "%";
