@@ -43,6 +43,16 @@ img {
   width: 5%;
   height: 10%;
   bottom: 0;
+  z-index: 1;
+}
+#platform {
+  position: absolute;
+  background-color: wheat;
+  width: 30%;
+  height: 10%;
+  bottom: 10%;
+  left: 30%;
+  border: 2px solid burlywood;
 }
 
 .jump {
