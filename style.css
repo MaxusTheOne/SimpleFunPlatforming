@@ -54,17 +54,11 @@ img {
   bottom: 0%;
   border: 2px solid burlywood;
 }
-
-.jump {
-  animation-name: jump;
-  animation-duration: 0.5s;
-  animation-iteration-count: 2;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease-out;
-  animation-direction: alternate;
-}
-@keyframes jump {
-  100% {
-    transform: translateY(-200%);
-  }
+#ground_platform {
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  height: 1%;
+  width: 100%;
+  background-color: aquamarine;
 }

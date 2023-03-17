@@ -2,7 +2,7 @@
 let playerObj = document.querySelector("#player");
 let platformObj = document.querySelector("#platform");
 let playerX = 10;
-let playerY = 0;
+let playerY = 1;
 let playerWidth = 5;
 let platformX = 30;
 let platformY = 10;
@@ -25,13 +25,9 @@ document.addEventListener("keydown", function (event) {
   if (event.key === "d") {
     moveKey[3] = true;
   }
-  if (event.key === "w" && canJump == true) {
+  if (event.key === "w") {
     // console.log(canJump);
     moveKey[0] = true;
-    gravity = 8;
-    gravityMode = true;
-    canJump = false;
-    onPlatform = false;
   }
 });
 document.addEventListener("keyup", function (event) {
@@ -59,18 +55,28 @@ function playerMovement() {
   } else if (moveKey[3] === true) {
     playerX += 1; // Move the player right
   }
+  if (moveKey[0] === true && canJump === true) {
+    //Jumping
+    gravity = 8;
+    gravityMode = true;
+    canJump = false;
+    onPlatform = false;
+  }
 
   playerGravity();
 
   playerObj.style.left = playerX + "%";
 }
 function playerGravity() {
-  platformCollision(platformY, platformHeight, platformX, platformWidth);
-  if (onPlatform) {
-    fallOffPlatform(platformX, platformWidth, platformY, platformHeight);
+  for (let i = 0; i < 1; i++) {
+    platformCollision(platformY, platformHeight, platformX, platformWidth);
+    if (onPlatform) {
+      fallOffPlatform(platformX, platformWidth, platformY, platformHeight);
+    }
   }
-  if (playerY < 0) {
-    platformCollision(0, 0, 0, 10000);
+
+  if (playerY < 1) {
+    platformCollision(1, 0, -500, 10000);
   } else if (gravityMode == true) {
     gravity -= 0.5;
     playerY += gravity;
