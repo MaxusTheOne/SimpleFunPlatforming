@@ -5,8 +5,9 @@ let playerY = 1;
 let playerWidth = 5;
 let platformX = [];
 let platformY = [];
-let platformHeight = 10;
+let platformHeight = 5;
 let platformWidth = 30;
+let platformAmount = 5;
 let onPlatform = false;
 let moveKey = [false, false, false, false]; //w,a,s,d
 let canJump = true;
@@ -42,9 +43,9 @@ document.addEventListener("keyup", function (event) {
   }
 });
 function initGame() {
-  createPlatform(35, 10, 0);
-  createPlatform(55, 40, 0);
-  createPlatform(5, 30.5, 2);
+  for (let i = 1; i <= platformAmount; i++) {
+    createPlatform(Math.floor(Math.random() * (100 - platformWidth)), i * (80 / platformAmount), i);
+  }
 }
 
 function playerMovement() {
@@ -84,14 +85,17 @@ function playerGravity() {
 }
 
 function platformCollision(localPlatformY, localPlatformHeight, localplatformX, localPlatformwidth) {
-  if (playerY < localPlatformY + localPlatformHeight && playerY > localPlatformY && gravity < 0) {
-    if (playerX + playerWidth > localplatformX && playerX < localplatformX + localPlatformwidth) {
+  if (playerX + playerWidth > localplatformX && playerX < localplatformX + localPlatformwidth) {
+    if (playerY < localPlatformY + localPlatformHeight && playerY > localPlatformY && gravity < 0) {
       playerY = localPlatformY + localPlatformHeight;
-      console.log("collided");
+      // console.log("collided");
       gravity = 0;
       gravityMode = false;
       canJump = true;
       onPlatform = true;
+    } else if (playerY + gravity <= localPlatformY + localPlatformHeight && playerY > localPlatformY) {
+      gravity = localPlatformY + localPlatformHeight - playerY;
+      console.log(`gravity adjusted to: ${gravity}, platY: ${localPlatformY}, playerY: ${playerY}`);
     }
   }
 }
