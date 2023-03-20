@@ -8,12 +8,12 @@ let platformY = [];
 let platformHeight = 2;
 let platformWidth = 10;
 let platformAmount = 30;
-let onPlatform = false;
+let onPlatform = [false, false];
 let moveKey = [false, false, false, false, false, false]; //w,a,d && ArrowUp, ArrowLeft, ArrowRight
-let canJump = true;
+let canJump = [true, true];
 let refreshRate = 20;
-let gravity = 0;
-let gravityMode = false;
+let gravity = [0, 0];
+let gravityMode = [false, false];
 setInterval(playerMovement, refreshRate);
 window.addEventListener("load", initGame);
 // Move the player left or right when an arrow key is pressed
@@ -70,62 +70,63 @@ function initGame() {
 function playerMovement() {
   //   console.log("gravity: " + gravity);
   //   console.log("playerY: " + playerY);
+  for (let i = 0; i < playerObj.length; i++) {
+    if (moveKey[1] === true) {
+      playerX[i] -= 0.5; // Move the player left
+    } else if (moveKey[2] === true) {
+      playerX[i] += 0.5; // Move the player right
+    }
+    if (moveKey[0] === true && canJump[i] === true) {
+      //Jumping
+      gravity[i] = 5;
+      gravityMode[i] = true;
+      canJump[i] = false;
+      onPlatform[i] = false;
+    }
 
-  if (moveKey[1] === true) {
-    playerX[0] -= 0.5; // Move the player left
-  } else if (moveKey[2] === true) {
-    playerX[0] += 0.5; // Move the player right
+    playerGravity(i);
+
+    playerObj[i].style.left = playerX[i] + "%";
   }
-  if (moveKey[0] === true && canJump === true) {
-    //Jumping
-    gravity = 5;
-    gravityMode = true;
-    canJump = false;
-    onPlatform = false;
-  }
-
-  playerGravity(0);
-
-  playerObj[0].style.left = playerX[0] + "%";
 }
 function playerGravity(playerId) {
   for (let i = 0; i <= platformX.length; i++) {
-    platformCollision(platformY[i], platformHeight, platformX[i], platformWidth);
-    if (onPlatform) {
-      fallOffPlatform(platformX[i], platformWidth, platformY[i], platformHeight);
+    platformCollision(platformY[i], platformHeight, platformX[i], platformWidth, playerId);
+    if (onPlatform[playerId]) {
+      fallOffPlatform(platformX[i], platformWidth, platformY[i], platformHeight, playerId);
     }
   }
 
-  platformCollision(-10, 11, -500, 10000);
-  if (gravityMode == true) {
-    gravity -= 0.3;
-    playerY[playerId] += gravity;
+  platformCollision(-10, 11, -500, 10000, playerId);
+  if (gravityMode[playerId] == true) {
+    gravity[playerId] -= 0.3;
+    playerY[playerId] += gravity[playerId];
   }
   playerObj[playerId].style.bottom = playerY[playerId] + "%";
 }
 
-function platformCollision(localPlatformY, localPlatformHeight, localplatformX, localPlatformwidth) {
-  if (playerX[0] + playerWidth > localplatformX && playerX[0] < localplatformX + localPlatformwidth) {
-    if (playerY[0] < localPlatformY + localPlatformHeight && playerY[0] > localPlatformY && gravity < 0) {
-      playerY[0] = localPlatformY + localPlatformHeight;
+function platformCollision(localPlatformY, localPlatformHeight, localplatformX, localPlatformwidth, playerId) {
+  if (playerX[playerId] + playerWidth > localplatformX && playerX[playerId] < localplatformX + localPlatformwidth) {
+    if (playerY[playerId] < localPlatformY + localPlatformHeight && playerY[playerId] > localPlatformY && gravity[playerId] < 0) {
+      playerY[playerId] = localPlatformY + localPlatformHeight;
       // console.log("collided");
-      gravity = 0;
-      gravityMode = false;
-      canJump = true;
-      onPlatform = true;
-    } else if (playerY[0] + gravity <= localPlatformY + localPlatformHeight && playerY[0] > localPlatformY && gravity < 0) {
-      gravity = localPlatformY + localPlatformHeight - playerY[0];
-      console.log(`gravity adjusted to: ${gravity}, platY: ${localPlatformY}, playerY: ${playerY[0]}`);
+      gravity[playerId] = 0;
+      gravityMode[playerId] = false;
+      canJump[playerId] = true;
+      onPlatform[playerId] = true;
+    } else if (playerY[playerId] + gravity[playerId] <= localPlatformY + localPlatformHeight && playerY[playerId] > localPlatformY && gravity[playerId] < 0) {
+      gravity[playerId] = localPlatformY + localPlatformHeight - playerY[playerId];
+      console.log(`gravity adjusted to: ${gravity[playerId]}, platY: ${localPlatformY}, playerY: ${playerY[playerId]}`);
     }
   }
 }
-function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, localPlatformHeight) {
-  if (playerX[0] + playerWidth < localplatformX || playerX[0] > localplatformX + localPlatformwidth) {
-    if (playerY[0] <= localPlatformY + localPlatformHeight && playerY[0] >= localPlatformY + localPlatformHeight) {
+function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, localPlatformHeight, playerId) {
+  if (playerX[playerId] + playerWidth < localplatformX || playerX[playerId] > localplatformX + localPlatformwidth) {
+    if (playerY[playerId] <= localPlatformY + localPlatformHeight && playerY[playerId] >= localPlatformY + localPlatformHeight) {
       console.log("fall off platform");
-      gravityMode = true;
-      onPlatform = false;
-      canJump = false;
+      gravityMode[playerId] = true;
+      onPlatform[playerId] = false;
+      canJump[playerId] = false;
     }
   }
 }
