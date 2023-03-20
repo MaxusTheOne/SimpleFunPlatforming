@@ -71,12 +71,12 @@ function playerMovement() {
   //   console.log("gravity: " + gravity);
   //   console.log("playerY: " + playerY);
   for (let i = 0; i < playerObj.length; i++) {
-    if (moveKey[1] === true) {
+    if ((i == 1 && moveKey[1] === true) || (i == 0 && moveKey[4] === true)) {
       playerX[i] -= 0.5; // Move the player left
-    } else if (moveKey[2] === true) {
+    } else if ((i == 1 && moveKey[2] === true) || (i == 0 && moveKey[5] === true)) {
       playerX[i] += 0.5; // Move the player right
     }
-    if (moveKey[0] === true && canJump[i] === true) {
+    if ((i == 1 && moveKey[0] === true && canJump[i] === true) || (i == 0 && moveKey[3] === true && canJump[i] === true)) {
       //Jumping
       gravity[i] = 5;
       gravityMode[i] = true;
