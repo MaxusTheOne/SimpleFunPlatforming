@@ -37,12 +37,20 @@ img {
   opacity: 0.8;
   z-index: -1;
 }
-#player {
+#player1 {
   position: absolute;
   background-color: blue;
   width: 2%;
   height: 5%;
   bottom: 0;
+  z-index: 1;
+}
+#player2 {
+  position: absolute;
+  background-color: red;
+  width: 2%;
+  height: 5%;
+  bottom: 1%;
   z-index: 1;
 }
 .platform {
