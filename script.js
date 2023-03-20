@@ -3,6 +3,7 @@ let playerObj = [document.querySelector("#player1"), document.querySelector("#pl
 let playerX = [10, 20];
 let playerY = [1, 1];
 let playerWidth = 2;
+let playerHeight = 5;
 let platformX = [];
 let platformY = [];
 let platformHeight = 2;
@@ -65,6 +66,9 @@ function initGame() {
   for (let i = 1; i <= platformAmount; i++) {
     createPlatform(Math.floor(Math.random() * (100 - platformWidth)), i * (90 / platformAmount), i);
   }
+  for (let i = 0; i < playerObj.length; i++) {
+    playerX[i] = Math.random() * 100;
+  }
 }
 
 function playerMovement() {
@@ -78,28 +82,32 @@ function playerMovement() {
     }
     if ((i == 1 && moveKey[0] === true && canJump[i] === true) || (i == 0 && moveKey[3] === true && canJump[i] === true)) {
       //Jumping
-      gravity[i] = 5;
+      gravity[i] = 4;
       gravityMode[i] = true;
       canJump[i] = false;
       onPlatform[i] = false;
     }
 
     playerGravity(i);
-
+    offSide(i);
+    bonk(i);
     playerObj[i].style.left = playerX[i] + "%";
   }
 }
 function playerGravity(playerId) {
   for (let i = 0; i <= platformX.length; i++) {
     platformCollision(platformY[i], platformHeight, platformX[i], platformWidth, playerId);
-    if (onPlatform[playerId]) {
+  }
+
+  if (onPlatform[playerId]) {
+    for (let i = 0; i <= platformX.length; i++) {
       fallOffPlatform(platformX[i], platformWidth, platformY[i], platformHeight, playerId);
     }
   }
 
   platformCollision(-10, 11, -500, 10000, playerId);
   if (gravityMode[playerId] == true) {
-    gravity[playerId] -= 0.3;
+    gravity[playerId] -= 0.2;
     playerY[playerId] += gravity[playerId];
   }
   playerObj[playerId].style.bottom = playerY[playerId] + "%";
@@ -143,4 +151,16 @@ function createPlatform(x, y, id) {
   platform.style.left = x + "%";
   platform.style.bottom = y + "%";
   parent.appendChild(platform);
+}
+function offSide(playerId) {
+  if (playerX[playerId] <= -0.1 - playerWidth) {
+    playerX[playerId] = 100;
+  } else if (playerX[playerId] >= 100.1) {
+    playerX[playerId] = 0 - playerWidth;
+  }
+}
+function bonk(playerId) {
+  if (playerY[playerId] >= 100 - playerHeight) {
+    gravity[playerId] = 0;
+  }
 }
