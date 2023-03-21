@@ -2,13 +2,13 @@
 let playerObj = [document.querySelector("#player1"), document.querySelector("#player2")];
 let playerX = [10, 20];
 let playerY = [1, 1];
-let playerWidth = 2;
-let playerHeight = 5;
+let playerWidth = [2, 2];
+let playerHeight = [5, 5];
 let platformX = [];
 let platformY = [];
 let platformHeight = 2;
 let platformWidth = 10;
-let platformAmount = 30;
+let platformAmount = 20;
 let onPlatform = [false, false];
 let moveKey = [false, false, false, false, false, false]; //w,a,d && ArrowUp, ArrowLeft, ArrowRight
 let canJump = [true, true];
@@ -69,6 +69,7 @@ function initGame() {
   for (let i = 0; i < playerObj.length; i++) {
     playerX[i] = Math.random() * 100;
   }
+  mushroomEffect(0);
 }
 
 function playerMovement() {
@@ -114,7 +115,7 @@ function playerGravity(playerId) {
 }
 
 function platformCollision(localPlatformY, localPlatformHeight, localplatformX, localPlatformwidth, playerId) {
-  if (playerX[playerId] + playerWidth > localplatformX && playerX[playerId] < localplatformX + localPlatformwidth) {
+  if (playerX[playerId] + playerWidth[playerId] > localplatformX && playerX[playerId] < localplatformX + localPlatformwidth) {
     if (playerY[playerId] < localPlatformY + localPlatformHeight && playerY[playerId] > localPlatformY && gravity[playerId] < 0) {
       playerY[playerId] = localPlatformY + localPlatformHeight;
       // console.log("collided");
@@ -129,7 +130,7 @@ function platformCollision(localPlatformY, localPlatformHeight, localplatformX, 
   }
 }
 function fallOffPlatform(localplatformX, localPlatformwidth, localPlatformY, localPlatformHeight, playerId) {
-  if (playerX[playerId] + playerWidth < localplatformX || playerX[playerId] > localplatformX + localPlatformwidth) {
+  if (playerX[playerId] + playerWidth[playerId] < localplatformX || playerX[playerId] > localplatformX + localPlatformwidth) {
     if (playerY[playerId] <= localPlatformY + localPlatformHeight && playerY[playerId] >= localPlatformY + localPlatformHeight) {
       console.log("fall off platform");
       gravityMode[playerId] = true;
@@ -153,14 +154,20 @@ function createPlatform(x, y, id) {
   parent.appendChild(platform);
 }
 function offSide(playerId) {
-  if (playerX[playerId] <= -0.1 - playerWidth) {
+  if (playerX[playerId] <= -0.1 - playerWidth[playerId]) {
     playerX[playerId] = 100;
   } else if (playerX[playerId] >= 100.1) {
-    playerX[playerId] = 0 - playerWidth;
+    playerX[playerId] = 0 - playerWidth[playerId];
   }
 }
 function bonk(playerId) {
-  if (playerY[playerId] >= 100 - playerHeight) {
+  if (playerY[playerId] >= 100 - playerHeight[playerId]) {
     gravity[playerId] = 0;
   }
+}
+
+function mushroomEffect(playerId) {
+  playerObj[playerId].classList.add("superSize");
+  playerHeight[playerId] = 10;
+  platformWidth[playerId] = 4;
 }

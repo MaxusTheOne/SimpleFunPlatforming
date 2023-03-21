@@ -124,3 +124,17 @@ img {
     background-position: 0% 82%;
   }
 }
+/* mushroom animation */
+.superSize {
+  animation-name: embiggen;
+  animation-duration: 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes embiggen {
+  100% {
+    height: 10%;
+    width: 4%;
+  }
+}
