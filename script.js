@@ -4,11 +4,13 @@ let playerX = [10, 20];
 let playerY = [1, 1];
 let playerWidth = [2, 2];
 let playerHeight = [5, 5];
+let playerScore = [0, 0];
+let isBig = [false, false];
 let platformX = [];
 let platformY = [];
 let platformHeight = 2;
 let platformWidth = 10;
-let platformAmount = 20;
+let platformAmount = 30;
 let onPlatform = [false, false];
 let moveKey = [false, false, false, false, false, false]; //w,a,d && ArrowUp, ArrowLeft, ArrowRight
 let canJump = [true, true];
@@ -69,7 +71,7 @@ function initGame() {
   for (let i = 0; i < playerObj.length; i++) {
     playerX[i] = Math.random() * 100;
   }
-  mushroomEffect(0);
+  newMushroomPlayer();
 }
 
 function playerMovement() {
@@ -77,13 +79,19 @@ function playerMovement() {
   //   console.log("playerY: " + playerY);
   for (let i = 0; i < playerObj.length; i++) {
     if ((i == 1 && moveKey[1] === true) || (i == 0 && moveKey[4] === true)) {
-      playerX[i] -= 0.5; // Move the player left
+      if (isBig[i]) {
+        playerX[i] -= 0.8;
+      } else playerX[i] -= 0.5; // Move the player left
     } else if ((i == 1 && moveKey[2] === true) || (i == 0 && moveKey[5] === true)) {
-      playerX[i] += 0.5; // Move the player right
+      if (isBig[i]) {
+        playerX[i] += 0.8;
+      } else playerX[i] += 0.5; // Move the player right
     }
     if ((i == 1 && moveKey[0] === true && canJump[i] === true) || (i == 0 && moveKey[3] === true && canJump[i] === true)) {
       //Jumping
-      gravity[i] = 4;
+      if (isBig[i]) {
+        gravity[i] = 5;
+      } else gravity[i] = 4;
       gravityMode[i] = true;
       canJump[i] = false;
       onPlatform[i] = false;
@@ -92,6 +100,7 @@ function playerMovement() {
     playerGravity(i);
     offSide(i);
     bonk(i);
+    if (isBig[i]) detectPlayerCollision(i);
     playerObj[i].style.left = playerX[i] + "%";
   }
 }
@@ -125,7 +134,7 @@ function platformCollision(localPlatformY, localPlatformHeight, localplatformX, 
       onPlatform[playerId] = true;
     } else if (playerY[playerId] + gravity[playerId] <= localPlatformY + localPlatformHeight && playerY[playerId] > localPlatformY && gravity[playerId] < 0) {
       gravity[playerId] = localPlatformY + localPlatformHeight - playerY[playerId];
-      console.log(`gravity adjusted to: ${gravity[playerId]}, platY: ${localPlatformY}, playerY: ${playerY[playerId]}`);
+      // console.log(`gravity adjusted to: ${gravity[playerId]}, platY: ${localPlatformY}, playerY: ${playerY[playerId]}`);
     }
   }
 }
@@ -162,12 +171,50 @@ function offSide(playerId) {
 }
 function bonk(playerId) {
   if (playerY[playerId] >= 100 - playerHeight[playerId]) {
-    gravity[playerId] = 0;
+    gravity[playerId] = -1;
   }
 }
 
 function mushroomEffect(playerId) {
   playerObj[playerId].classList.add("superSize");
+  playerObj[playerId].querySelector("div").classList.add("wrapper");
   playerHeight[playerId] = 10;
-  platformWidth[playerId] = 4;
+  playerWidth[playerId] = 4;
+  isBig[playerId] = true;
+  setTimeout(endMushroom, 10000);
+}
+function endMushroom() {
+  for (let i = 0; i < playerObj.length; i++) {
+    playerObj[i].classList.remove("superSize");
+    playerObj[i].querySelector("div").classList.remove("wrapper");
+    playerHeight[i] = 5;
+    playerWidth[i] = 2;
+    isBig[i] = false;
+  }
+  setTimeout(newMushroomPlayer, 3000);
+}
+function newMushroomPlayer() {
+  mushroomEffect(Math.floor(Math.random() * 2));
+}
+function detectPlayerCollision(bigPlayerId) {
+  if (playerX[0] + playerWidth[0] >= playerX[1] && playerX[0] <= playerX[1] + playerWidth[1]) {
+    // console.log("playerX collision");
+    if (playerY[0] + playerHeight[0] >= playerY[1] && playerY[0] <= playerY[1] + playerHeight[1]) {
+      console.log("player collision");
+      if (bigPlayerId == 1) resetPlayer(0);
+      else {
+        resetPlayer(1);
+      }
+      updateScore(bigPlayerId);
+    }
+  }
+}
+function resetPlayer(hitPlayer) {
+  playerY[hitPlayer] = 1;
+  playerX[hitPlayer] = Math.random() * 100;
+}
+
+function updateScore(playerId) {
+  playerScore[playerId]++;
+  document.querySelector("#player" + playerId + "_score").textContent = playerScore[playerId];
 }
