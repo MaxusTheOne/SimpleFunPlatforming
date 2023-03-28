@@ -6,6 +6,8 @@ let playerWidth = [2, 2];
 let playerHeight = [5, 5];
 let playerScore = [0, 0];
 let isBig = [false, false];
+let berryX;
+let berryY;
 let platformX = [];
 let platformY = [];
 let platformHeight = 2;
@@ -69,9 +71,9 @@ function initGame() {
     createPlatform(Math.floor(Math.random() * (100 - platformWidth)), i * (90 / platformAmount), i);
   }
   for (let i = 0; i < playerObj.length; i++) {
-    playerX[i] = Math.random() * 100;
+    // playerX[i] = Math.random() * 100;
+    resetPlayer(i);
   }
-  newMushroomPlayer();
   spawnBerry();
 }
 
@@ -102,6 +104,7 @@ function playerMovement() {
     offSide(i);
     bonk(i);
     if (isBig[i]) detectPlayerCollision(i);
+    else detectBerryCollision(i);
     playerObj[i].style.left = playerX[i] + "%";
   }
 }
@@ -192,7 +195,7 @@ function endMushroom() {
     playerWidth[i] = 2;
     isBig[i] = false;
   }
-  setTimeout(newMushroomPlayer, 3000);
+  setTimeout(spawnBerry, 1000);
 }
 function newMushroomPlayer() {
   mushroomEffect(Math.floor(Math.random() * 2));
@@ -211,8 +214,10 @@ function detectPlayerCollision(bigPlayerId) {
   }
 }
 function resetPlayer(hitPlayer) {
-  playerY[hitPlayer] = 1;
+  playerY[hitPlayer] = 1 + Math.random() * 80;
   playerX[hitPlayer] = Math.random() * 100;
+  gravityMode[hitPlayer] = true;
+  onPlatform[hitPlayer] = false;
 }
 
 function updateScore(playerId) {
@@ -222,8 +227,10 @@ function updateScore(playerId) {
 
 function spawnBerry() {
   let berry = document.querySelector("#berry");
-  berry.style.left = 5 + Math.floor(Math.random() * 90) + "%";
-  berry.style.bottom = 5 + Math.floor(Math.random() * 80) + "%";
+  berryX = 5 + Math.floor(Math.random() * 90);
+  berryY = 5 + Math.floor(Math.random() * 80);
+  berry.style.left = berryX + "%";
+  berry.style.bottom = berryY + "%";
 }
 
 function eatBerry(playerId) {
@@ -232,10 +239,18 @@ function eatBerry(playerId) {
   mushroomEffect(playerId);
 }
 
-function detectBerryCollision(berryX, berryY, playerId) {
-  if (playerX[0] + playerWidth[0] >= berryX && playerX[0] <= playerX[1] + playerWidth[1]) {
-    // console.log("playerX collision");
-    if (playerY[0] + playerHeight[0] >= playerY[1] && playerY[0] <= playerY[1] + playerHeight[1]) {
+function detectBerryCollision(playerId) {
+  // console.log("trying to detect berry");
+  // console.log(`playerId: ${playerId} playerX: ${playerX} berryX: ${berryX}`);
+  if (playerX[playerId] + playerWidth[playerId] >= berryX && playerX[playerId] <= berryX + 3) {
+    if (playerY[playerId] + playerHeight[playerId] >= berryY && playerY[playerId] <= berryY + 3) {
+      console.log("berry collision");
+      eatBerry(playerId);
     }
   }
 }
+function winGame() {}
+
+function showWinGameScreen() {}
+
+function resetGame() {}
