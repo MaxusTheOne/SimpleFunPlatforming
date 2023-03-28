@@ -72,6 +72,7 @@ function initGame() {
     playerX[i] = Math.random() * 100;
   }
   newMushroomPlayer();
+  spawnBerry();
 }
 
 function playerMovement() {
@@ -217,4 +218,24 @@ function resetPlayer(hitPlayer) {
 function updateScore(playerId) {
   playerScore[playerId]++;
   document.querySelector("#player" + playerId + "_score").textContent = playerScore[playerId];
+}
+
+function spawnBerry() {
+  let berry = document.querySelector("#berry");
+  berry.style.left = 5 + Math.floor(Math.random() * 90) + "%";
+  berry.style.bottom = 5 + Math.floor(Math.random() * 80) + "%";
+}
+
+function eatBerry(playerId) {
+  let berry = document.querySelector("#berry");
+  berry.style.bottom = "-20%";
+  mushroomEffect(playerId);
+}
+
+function detectBerryCollision(berryX, berryY, playerId) {
+  if (playerX[0] + playerWidth[0] >= berryX && playerX[0] <= playerX[1] + playerWidth[1]) {
+    // console.log("playerX collision");
+    if (playerY[0] + playerHeight[0] >= playerY[1] && playerY[0] <= playerY[1] + playerHeight[1]) {
+    }
+  }
 }
