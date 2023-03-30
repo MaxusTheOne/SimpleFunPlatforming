@@ -19,6 +19,7 @@ let canJump = [true, true];
 let refreshRate = 20;
 let gravity = [0, 0];
 let gravityMode = [false, false];
+let game_state = "loading";
 setInterval(playerMovement, refreshRate);
 window.addEventListener("load", initGame);
 // Move the player left or right when an arrow key is pressed
@@ -75,6 +76,8 @@ function initGame() {
     resetPlayer(i);
   }
   spawnBerry();
+  document.querySelector("#game_over_screen").classList.add("hidden");
+  game_state = "started";
 }
 
 function playerMovement() {
@@ -197,9 +200,7 @@ function endMushroom() {
   }
   setTimeout(spawnBerry, 1000);
 }
-function newMushroomPlayer() {
-  mushroomEffect(Math.floor(Math.random() * 2));
-}
+
 function detectPlayerCollision(bigPlayerId) {
   if (playerX[0] + playerWidth[0] >= playerX[1] && playerX[0] <= playerX[1] + playerWidth[1]) {
     // console.log("playerX collision");
@@ -221,8 +222,13 @@ function resetPlayer(hitPlayer) {
 }
 
 function updateScore(playerId) {
-  playerScore[playerId]++;
-  document.querySelector("#player" + playerId + "_score").textContent = playerScore[playerId];
+  if (game_state == "started") {
+    playerScore[playerId]++;
+    document.querySelector("#player" + playerId + "_score").textContent = playerScore[playerId];
+    if (playerScore[playerId] >= 10) {
+      winGame(playerId);
+    }
+  }
 }
 
 function spawnBerry() {
@@ -249,8 +255,18 @@ function detectBerryCollision(playerId) {
     }
   }
 }
-function winGame() {}
-
-function showWinGameScreen() {}
+function winGame(playerId) {
+  let gameOverScreen = document.querySelector("#game_over_screen");
+  game_state = "game_over";
+  if (playerId == 0) {
+    gameOverScreen.textContent = "Blue Wins!";
+    gameOverScreen.classList.remove("hidden");
+    gameOverScreen.classList.add("blueWin");
+  } else {
+    gameOverScreen.textContent = "Red Wins!";
+    gameOverScreen.classList.remove("hidden");
+    gameOverScreen.classList.add("redWin");
+  }
+}
 
 function resetGame() {}
