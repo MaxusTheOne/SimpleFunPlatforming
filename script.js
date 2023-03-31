@@ -242,6 +242,7 @@ function spawnBerry() {
 function eatBerry(playerId) {
   let berry = document.querySelector("#berry");
   berry.style.bottom = "-20%";
+  berryY = -20;
   mushroomEffect(playerId);
 }
 
